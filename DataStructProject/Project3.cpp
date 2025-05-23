@@ -39,8 +39,8 @@ Status InitSqStack(SqStack& S) {
     if (!S.base) {
         exit(OVERFLOW);
     }
-    S.evenNumTop = 0;              // 栈1底部，向右增长
-    S.oddNumTop = STACK_INIT_SIZE - 1; // 栈2底部，向左增长
+    S.evenNumTop = 0;              // 栈even底部，向右增长
+    S.oddNumTop = STACK_INIT_SIZE - 1; // 栈odd底部，向左增长
     S.stacksize = STACK_INIT_SIZE;
     return OK;
 }
