@@ -50,14 +50,14 @@ Status Push(Stack& S, BiTree T) {
 }
 
 Status Pop(Stack& S, BiTree& T) {
-	if (S.top == -1) return 0; // Stack is empty
+	if (S.top == -1) return 0; 
 	T = S.data[S.top--];
 	return OK;
 }
 
 Status InOrderTraverse(BiTree T) {
 	Stack S;
-	InitStack(S, 100); // Initialize stack with a max size of 100
+	InitStack(S, 100); 
 	BiTree p = T;
 	while (p || S.top != -1) {
 		while (p) {
@@ -138,3 +138,10 @@ int main() {
 	DestroyTree(T);
 	return 0;
 }
+
+
+/* test
+选择1，输入：A B # D # # C # #
+选择2，输出应为：B D A C
+选择3，输出应为：D C，叶子结点个数为2
+*/
