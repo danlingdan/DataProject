@@ -27,5 +27,11 @@
     <ClCompile Include="Project4.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Project5%28piece of shit%29.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Project5.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

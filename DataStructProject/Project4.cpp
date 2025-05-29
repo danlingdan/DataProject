@@ -111,6 +111,7 @@ int main() {
 		std::cin >> choice;
 		switch (choice) {
 			case 1:
+				if (T != NULL) DestroyTree(T); // 增加旧树销毁
 				std::cout << "请输入字符序列（#表示空结点）: ";
 				CreateBitree(T);
 				break;
