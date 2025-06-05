@@ -49,6 +49,7 @@ Status CreatDG(MGraph& G) {
 
     // 输入各顶点名称
     for (int i = 0; i < G.vexnum; i++) {
+        std::cout << "请输入第" << i+1 << "个城市的名字";
         std::cin >> G.vexs[i];
     }
     // 初始化邻接矩阵
@@ -78,49 +79,50 @@ Status CreatDG(MGraph& G) {
 typedef bool PathMatrix[MAX_VERTEX_NUM][MAX_VERTEX_NUM];
 typedef int ShortPathTable[MAX_VERTEX_NUM]; // 存储最短路径长度
 
-// Dijkstra算法，求v0到其他各点的最短路径
-Status ShortestPath_DIJ(MGraph G, city v0, PathMatrix& P, ShortPathTable& D) {
-    bool final[MAX_VERTEX_NUM]; // 标记是否已求得最短路径
+// Dijkstra算法，求v0到其他各点的最短路径，增加prev数组记录路径
+Status ShortestPath_DIJ(MGraph G, city v0, ShortPathTable& D, int prev[MAX_VERTEX_NUM]) {
+    bool final[MAX_VERTEX_NUM];
     int v0Index = LocatVex(G, v0);
     if (v0Index == -1) return ERROR;
-    // 初始化
     for (int v = 0; v < G.vexnum; v++) {
         final[v] = FALSE;
         D[v] = G.arcs[v0Index][v].adj;
-        for (int w = 0; w < G.vexnum; ++w) {
-            P[v][w] = FALSE;
-        }
-        if (D[v] < INF) {
-            P[v][v0Index] = TRUE; P[v][v] = TRUE;
-        }
+        if (D[v] < INF)
+            prev[v] = v0Index;
+        else
+            prev[v] = -1;
     }
+    D[v0Index] = 0;
+    final[v0Index] = TRUE;
+    prev[v0Index] = -1;
 
-    D[v0Index] = 0; final[v0Index] = TRUE;
-
-    // 主循环，每次确定一个顶点的最短路径
     for (int i = 1; i < G.vexnum; ++i) {
-        int min = INF;
-        int v = -1;
-        // 选取当前未确定的最短路径中距离最小的顶点
+        int min = INF, v = -1;
         for (int w = 0; w < G.vexnum; ++w) {
             if (!final[w] && D[w] < min) {
                 v = w; min = D[w];
             }
         }
-        if (v == -1) break; // 剩余顶点不可达
+        if (v == -1) break;
         final[v] = TRUE;
-        // 更新与v相邻的顶点的最短路径
         for (int w = 0; w < G.vexnum; w++) {
-            if (!final[w] && (min + G.arcs[v][w].adj < D[w])) {
+            if (!final[w] && G.arcs[v][w].adj < INF && min + G.arcs[v][w].adj < D[w]) {
                 D[w] = min + G.arcs[v][w].adj;
-                for (int k = 0; k < G.vexnum; ++k) {
-                    P[w][k] = P[v][k];
-                }
-                P[w][w] = TRUE;
+                prev[w] = v;
             }
         }
     }
     return OK;
+}
+
+// 输出从start到end的路径
+void PrintPath(MGraph& G, int prev[], int start, int end) {
+    if (end == -1) return;
+    if (end != start) {
+        PrintPath(G, prev, start, prev[end]);
+        std::cout << " -> ";
+    }
+    std::cout << G.vexs[end];
 }
 
 // 输出从v0到所有其他顶点的最短路径及长度
@@ -167,19 +169,45 @@ void Menu() {
 int main() {
     MGraph G;
     int choice;
-    Menu();
-    std::cin >> choice;
-    while (choice != 2) {
+    do {
         Menu();
-        CreatDG(G);
-        PathMatrix P;
-        ShortPathTable D;
-        ShortestPath_DIJ(G, G.vexs[0], P, D);
-        PrintShortestPaths(G, G.vexs[0], P, D);
-        DestoryMGraph(G);
-        getchar();
-        system("cls");
-    }
+        std::cin >> choice;
+        if (choice == 1) {
+            CreatDG(G);
+
+            city startCity, endCity;
+            std::cout << "请输入起点城市名称：";
+            std::cin >> startCity;
+            std::cout << "请输入终点城市名称：";
+            std::cin >> endCity;
+
+            int startIdx = LocatVex(G, startCity);
+            int endIdx = LocatVex(G, endCity);
+            if (startIdx == -1 || endIdx == -1) {
+                std::cout << "城市名称输入有误！" << std::endl;
+                continue;
+            }
+
+            ShortPathTable D;
+            int prev[MAX_VERTEX_NUM];
+            if (ShortestPath_DIJ(G, startCity, D, prev) == ERROR) {
+                std::cout << "最短路径计算失败！" << std::endl;
+                continue;
+            }
+
+            if (D[endIdx] == INF) {
+                std::cout << "从 " << startCity << " 到 " << endCity << " 不可达。" << std::endl;
+            }
+            else {
+                std::cout << "最短路径长度为: " << D[endIdx] << std::endl;
+                std::cout << "所经过的城市为: ";
+                PrintPath(G, prev, startIdx, endIdx);
+                std::cout << std::endl;
+            }
+
+            DestoryMGraph(G);
+        }
+    } while (choice != 2);
     return 0;
 }
 

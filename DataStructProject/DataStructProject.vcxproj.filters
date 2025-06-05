@@ -33,5 +33,11 @@
     <ClCompile Include="Project5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="顺序链表.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Project6.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
