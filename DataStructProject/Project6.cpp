@@ -91,6 +91,63 @@ int selectSort(Node& L, int& compareCount, int& moveCount) {
     return OK;
 }
 
+int BubbleSort(Node& L, int& compareCount, int& moveCount) {
+    compareCount = 0;
+    moveCount = 0;
+    if (!L.next || !L.next->next) return OK; 
+
+    bool swapped;
+    do {
+        swapped = false;
+        Node* prev = &L;
+        Node* curr = L.next;
+        Node* next = curr->next;
+        while (next) {
+            compareCount++;
+            if (curr->data > next->data) {
+                curr->next = next->next;
+                next->next = curr;
+                prev->next = next;
+                moveCount++;
+                swapped = true;
+                prev = next;
+                next = curr->next;
+            }
+            else {
+                prev = curr;
+                curr = next;
+                next = next->next;
+            }
+        }
+    } while (swapped);
+    return OK;
+}
+
+void PrintList(const Node& L) {
+    const Node* p = L.next;
+    while (p) {
+        std::cout << p->data << " ";
+        p = p->next;
+    }
+    std::cout << std::endl;
+}
+// 深拷贝链表
+Node* CopyList(const Node* src) {
+    Node* newHead = new Node;
+    newHead->next = nullptr;
+    Node* tail = newHead;
+    const Node* p = src->next;
+    while (p) {
+        Node* s = new Node;
+        s->data = p->data;
+        s->next = nullptr;
+        tail->next = s;
+        tail = s;
+        p = p->next;
+    }
+    return newHead;
+}
+
 int main() {
     Node* TestList;
     InitList(TestList);
@@ -100,23 +157,34 @@ int main() {
     InsrtList(TestList, 834);
     InsrtList(TestList, 213354);
     InsrtList(TestList, 3435);
-    InsrtList(TestList, 01245);
+    InsrtList(TestList, 1245);
     InsrtList(TestList, 24453);
     InsrtList(TestList, 254);
     InsrtList(TestList, 42678);
     InsrtList(TestList, 452678);
     InsrtList(TestList, 422245);
 
-    Node Test1 = *TestList;
-    Node Test2 = *TestList;
-    int compareCount1, compareCount2;
-    int moveCount1, moveCount2;
+    Node* Test1 = CopyList(TestList);
+    Node* Test2 = CopyList(TestList);
+    Node* Test3 = CopyList(TestList);
+    int compareCount1, compareCount2, compareCount3;
+    int moveCount1, moveCount2, moveCount3;
 
-    InsertSort(Test1, compareCount1, moveCount1);
-    selectSort(Test2, compareCount2, moveCount2);
+    InsertSort(*Test1, compareCount1, moveCount1);
+    selectSort(*Test2, compareCount2, moveCount2);
+    BubbleSort(*Test3, compareCount3, moveCount3);
 
-    std::cout << "直接插入排序比较次数和关键字移动次数:" << compareCount1 << moveCount1 << std::endl;
-    std::cout << "简单选择排序比较次数和关键字移动次数:" << compareCount2 << moveCount2;
+    std::cout << "直接插入排序结果: ";
+    PrintList(*Test1);
+    std::cout << "比较次数: " << compareCount1 << " 移动次数: " << moveCount1 << std::endl;
+
+    std::cout << "简单选择排序结果: ";
+    PrintList(*Test2);
+    std::cout << "比较次数: " << compareCount2 << " 移动次数: " << moveCount2 << std::endl;
+
+    std::cout << "冒泡排序结果: ";
+    PrintList(*Test3);
+    std::cout << "比较次数: " << compareCount3 << " 移动次数: " << moveCount3 << std::endl;
 
     return 0;
 }

@@ -39,5 +39,17 @@
     <ClCompile Include="Project6.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="我的小巧思.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Cpp-Style-ParkingLot.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="小舍友的小巧思.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="正常人的小巧思.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
