@@ -257,3 +257,9 @@ int main()
 }
 	return OK;
 }
+
+if (findcar(S, car) == (-1)) { std::cout << "there is already a same car!"; }
+else
+{
+	park();
+}

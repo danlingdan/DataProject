@@ -2,8 +2,6 @@
 #include <stack>
 #include <string>
 #include <queue>
-#include <utility>
-#include <iterator>
 
 // 全局变量（停车场最大容量）
 unsigned int max_capacity = 0;
@@ -31,22 +29,18 @@ void Car::output() {
 }
 
 // 函数实现
-
 // 辅助输出函数
 void wait() {
 	std::cout << "输入空格继续。";
 	std::cin.ignore();
 	std::cin.get();
 }
-
 // 添加到等待队列
 void addToTheWaitingLine(std::queue<Car>& waiting_line, Car car) {
 	waiting_line.push(car);
 }
-
 // 获取等待队列中最顶端的车辆
 auto getTheToppestWaitingCar(std::queue<Car> waiting_line) { return waiting_line.front(); }
-
 // 停车函数
 void parkCar(std::stack<Car>& park_lot, std::queue<Car>& waiting_line, Car car) {
 	car.input();
@@ -56,7 +50,6 @@ void parkCar(std::stack<Car>& park_lot, std::queue<Car>& waiting_line, Car car) 
 	}
 }
 // 驶出停车场
-
 void driveOutOfThePark(std::stack<Car>& park_lot, std::queue<Car>& waiting_line, std::string car_num) {
 	auto temp1 = park_lot;
 	unsigned int index = 0;
@@ -82,7 +75,6 @@ void driveOutOfThePark(std::stack<Car>& park_lot, std::queue<Car>& waiting_line,
 	park_lot.push(getTheToppestWaitingCar(waiting_line));
 	waiting_line.pop();
 }
-
 int main() {
 	std::cout << "Please enter the maximum parked car:";
 	// 获取停车场最大容量

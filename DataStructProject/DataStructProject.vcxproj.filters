@@ -45,10 +45,16 @@
     <ClCompile Include="Cpp-Style-ParkingLot.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="小舍友的小巧思.cpp">
+    <ClCompile Include="李子豪的小巧思.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="正常人的小巧思.cpp">
+    <ClCompile Include="郭浩男的小巧思.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="boost.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="重新开始的李子豪的小巧思.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

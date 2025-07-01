@@ -18,49 +18,6 @@
 #define INCREASEMENT 100 // 定义增量值
 // 全局定义
 typedef int Status;     // 定义状态类型
-
-// 函数声明
-// 
-// 基本函数声明
-Status InitQueue(LinkQueue& Q); // 初始化队列函数
-bool QueueEmpty(LinkQueue& Q); // 判断队列是否为空函数
-int QueueSize(LinkQueue& Q); // 获取队列大小函数
-Status EnQueue(LinkQueue& Q, Car e); // 入队函数
-Status DeQueue(LinkQueue& Q, Car& e); // 出队函数
-Status GetFront(LinkQueue& Q, Car& e); // 获取队头元素函数
-Status InitParkStack(ParkStack& S, int max_car); // 初始化停车场栈函数
-Status ParkCar(ParkStack& S, LinkQueue& wait_queue, Car car, int& assigned_position); // 停车函数
-// 辅助函数声明
-void ClearBuffer(); // 清空输入缓冲区函数
-void DrawLine(char c = '-', int length = 50); // 绘制分隔线
-void DrawTitle(const std::string& title); // 绘制标题函数
-// 具体功能实现函数声明
-Status AddCarToWaitQueue(LinkQueue& wait_queue, Car car); // 添加车辆到等待队列函数
-Status RemoveCarFromWaitQueue(LinkQueue& wait_queue); // 从等待队列移除车辆函数
-Status GetCarFromWaitQueue(LinkQueue& wait_queue, Car& car); // 获取等待队列中的车辆函数
-Status DriveOutOfTheParkingLot(ParkStack& S, LinkQueue& wait_queue, std::string& number); // 车辆离开停车场函数
-// 结束函数声明
-Status DestroyParkStack(ParkStack& S); // 销毁停车场栈函数
-Status DestroyQueue(LinkQueue& Q); // 销毁队列函数
-
-// 辅助函数实现
-// 
-// 清空输入缓冲区函数
-void ClearBuffer() {    // 清空输入缓冲区函数
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-}
-// 绘制分隔线
-void DrawLine(char c = '-', int length = 50) {
-    std::cout << std::string(length, c) << std::endl;
-}
-// 绘制标题
-void DrawTitle(const std::string& title) {
-    DrawLine('=');      // 绘制上边框
-    std::cout << std::setw(25 + title.length() / 2) << title << std::endl; // 居中显示标题
-    DrawLine('=');      // 绘制下边框
-}
-
 // 数据结构体定义
 // 
 // 车辆结构体定义
@@ -89,6 +46,49 @@ typedef struct ParkStack {  // 停车场栈结构
     Car* base;              // 栈底指针
     Car* top;               // 栈顶指针
 }ParkStack;
+
+
+// 函数声明
+// 
+// 基本函数声明
+Status InitQueue(LinkQueue& Q); // 初始化队列函数
+bool QueueEmpty(LinkQueue& Q); // 判断队列是否为空函数
+int QueueSize(LinkQueue& Q); // 获取队列大小函数
+Status EnQueue(LinkQueue& Q, Car e); // 入队函数
+Status DeQueue(LinkQueue& Q, Car& e); // 出队函数
+Status GetFront(LinkQueue& Q, Car& e); // 获取队头元素函数
+Status InitParkStack(ParkStack& S, int max_car); // 初始化停车场栈函数
+Status ParkCar(ParkStack& S, LinkQueue& wait_queue, Car car, int& assigned_position); // 停车函数
+// 辅助函数声明
+void ClearBuffer(); // 清空输入缓冲区函数
+void DrawLine(char c, int length); // 绘制分隔线
+void DrawTitle(const std::string& title); // 绘制标题函数
+// 具体功能实现函数声明
+Status RemoveCarFromWaitQueue(LinkQueue& wait_queue); // 从等待队列移除车辆函数
+Status DriveOutOfTheParkingLot(ParkStack& S, LinkQueue& wait_queue, std::string& number); // 车辆离开停车场函数
+// 结束函数声明
+Status DestroyParkStack(ParkStack& S); // 销毁停车场栈函数
+Status DestroyQueue(LinkQueue& Q); // 销毁队列函数
+
+// 辅助函数实现
+// 
+// 清空输入缓冲区函数
+void ClearBuffer() {    // 清空输入缓冲区函数
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+// 绘制分隔线
+void DrawLine(char c = '-', int length = 50) {
+    std::cout << std::string(length, c) << std::endl;
+}
+// 绘制标题
+void DrawTitle(const std::string& title) {
+    DrawLine('=');      // 绘制上边框
+    std::cout << std::setw(25 + title.length() / 2) << title << std::endl; // 居中显示标题
+    DrawLine('=');      // 绘制下边框
+}
+
+
 
 // 基本函数实现
 Status InitQueue(LinkQueue& Q) {  // 初始化队列
@@ -142,57 +142,140 @@ Status ParkCar(ParkStack& S, LinkQueue& wait_queue, Car car, int& assigned_posit
         EnQueue(wait_queue, car);      // 加入等待队列
         assigned_position = car.position;
         return WAITING;
-    }
-    int pos = S.top - S.base + 1;      // 计算车位号
-    car.position = pos;
+    }   
+    car.position = S.top - S.base + 1; // 计算车位号
     *S.top = car;                       // 车辆入栈
     S.top++;
     assigned_position = car.position;
     return PARKED;
 }
 
-// 具体功能实现函数实现
-Status AddCarToWaitQueue(LinkQueue& wait_queue, Car car) { // 添加车辆到等待队列
-    EnQueue(wait_queue, car);
-    return WAITING;
-}
-Status RemoveCarFromWaitQueue(LinkQueue& wait_queue) { // 从等待队列移除车辆
-    if (QueueEmpty(wait_queue)) return ERROR;
-    Car temp;
-    DeQueue(wait_queue, temp);
-    return OK;
-}
-Status GetCarFromWaitQueue(LinkQueue& wait_queue, Car& car) { // 获取等待队列中的车辆
-    if (QueueEmpty(wait_queue)) return ERROR;
-    GetFront(wait_queue, car);
-    return OK;
-}
-Status DriveOutOfTheParkingLot(ParkStack& S, LinkQueue& wait_queue,  std::string& number) { // 车辆离开停车场
-    int count = S.top - S.base;
-    int idx = -1;
-    for (int i = 0; i < count; ++i) {  // 查找车辆位置
-        if (S.base[i].number == number) {
-            idx = i;
-            break;
+// 添加从等待队列中移除特定车辆的函数
+Status RemoveCarFromQueue(LinkQueue& Q, const std::string& number) {
+    if (QueueEmpty(Q)) return ERROR;  // 队列为空
+
+    // 创建一个临时队列来存储不需要移除的车辆
+    LinkQueue tempQueue;
+    if (InitQueue(tempQueue) != OK) return ERROR;
+
+    bool found = false;
+    Car car;
+    int position = 0;
+
+    std::cout << "\n在等待区查找车辆: " << number << std::endl;
+
+    // 遍历原队列
+    while (!QueueEmpty(Q)) {
+        DeQueue(Q, car);
+
+        if (car.number == number) {
+            found = true;
+            position = -car.position;  // 记录位置(负值表示等待区)
+            std::cout << "找到车辆: " << car.number << " (等待位置: " << position << ")" << std::endl;
+        }
+        else {
+            // 不是目标车辆，放入临时队列
+            EnQueue(tempQueue, car);
         }
     }
-    if (idx == -1) return ERROR;       // 未找到车辆
 
-    for (int i = idx; i < count - 1; ++i) { // 移动后面的车辆
-        S.base[i] = S.base[i + 1];
-        S.base[i].position = i + 1;
+    // 将临时队列中的车辆放回原队列
+    while (!QueueEmpty(tempQueue)) {
+        DeQueue(tempQueue, car);
+        EnQueue(Q, car);
     }
-    S.top--;                           // 栈顶指针减1
 
-    if (!QueueEmpty(wait_queue)) {     // 等待队列不为空
-        Car nextCar;
-        GetFront(wait_queue, nextCar); // 获取队头车辆
-        DeQueue(wait_queue, nextCar);  // 出队
-        nextCar.position = count;      // 分配车位
-        *S.top = nextCar;              // 进入停车场
-        S.top++;
+    // 更新等待队列中车辆的位置
+    if (found) {
+        QNode* current = Q.front->next;
+        int pos = 1;
+        while (current) {
+            current->data.position = -pos++;  // 负值表示等待区
+            current = current->next;
+        }
+
+        std::cout << "\n[成功] 车辆 " << number << " 已从等待区直接驶离" << std::endl;
     }
-    return OK;
+
+    DestroyQueue(tempQueue);
+    return found ? OK : ERROR;
+}
+
+// 修改车辆离开函数，先检查停车场，再检查等待区
+Status DriveOutOfTheParkingLot(ParkStack& S, LinkQueue& wait_queue, std::string& number) {
+    // 先在停车场中查找
+    ParkStack tempStack;
+    if (InitParkStack(tempStack, S.max_car) != OK) {
+        return ERROR;
+    }
+
+    bool found = false;
+    int count = S.top - S.base;
+
+    std::cout << "\n开始在停车场寻找车辆: " << number << std::endl;
+
+    // 从停车场中查找并移除
+    while (S.top > S.base && !found) {
+        S.top--;
+        Car currentCar = *S.top;
+
+        if (currentCar.number == number) {
+            found = true;
+            std::cout << "找到车辆: " << currentCar.number << " (停车位置: " << currentCar.position << ")" << std::endl;
+        }
+        else {
+            *tempStack.top = currentCar;
+            tempStack.top++;
+            std::cout << "临时移出车辆: " << currentCar.number << std::endl;
+        }
+    }
+
+    if (found) {
+        std::cout << "\n车辆 " << number << " 成功从停车场驶出！" << std::endl;
+
+        // 将临时栈中的车辆放回原停车场
+        std::cout << "\n将临时移出的车辆放回停车场:" << std::endl;
+        while (tempStack.top > tempStack.base) {
+            tempStack.top--;
+            *S.top = *tempStack.top;
+            std::cout << "车辆 " << tempStack.top->number << " 返回停车场" << std::endl;
+            S.top++;
+        }
+
+        // 更新车位号
+        for (int i = 0; i < (S.top - S.base); i++) {
+            S.base[i].position = i + 1;
+        }
+
+        // 检查等待队列，如果有车辆等待，则允许其进入停车场
+        if (!QueueEmpty(wait_queue)) {
+            Car nextCar;
+            DeQueue(wait_queue, nextCar);
+            nextCar.position = S.top - S.base + 1;
+            nextCar.status = PARKED;
+            *S.top = nextCar;
+            S.top++;
+            std::cout << "\n等待队列中的车辆 " << nextCar.number << " 进入停车场，分配车位: " << nextCar.position << std::endl;
+
+            // 更新等待队列中的位置
+            QNode* current = wait_queue.front->next;
+            int pos = 1;
+            while (current) {
+                current->data.position = -pos++;
+                current = current->next;
+            }
+        }
+
+        DestroyParkStack(tempStack);
+        return OK;
+    }
+
+    // 如果停车场中未找到，尝试在等待队列中查找
+    DestroyParkStack(tempStack);
+    std::cout << "\n停车场中未找到车辆 " << number << "，正在检查等待区..." << std::endl;
+
+    // 从等待队列中查找并移除
+    return RemoveCarFromQueue(wait_queue, number);
 }
 
 // 结束函数实现
@@ -223,7 +306,6 @@ int main() {
     system("cls");                     // 清屏 
     DrawTitle("智能停车场管理系统");
     cout << "\n" << setw(35) << "欢迎使用停车场管理系统" << endl;
-    cout << setw(30) << "版本: 1.1" << endl << endl;
     DrawLine('-');
 
     // 初始化等待队列
@@ -249,7 +331,7 @@ int main() {
     cin.get();
 
     while (true) {                     // 主循环
-        system("cls");                 // 清屏
+        //system("cls");                 // 清屏
         DrawTitle("停车场管理系统");
 
         // 显示当前状态概览
@@ -321,10 +403,10 @@ int main() {
             DrawLine('-');
             Status res = DriveOutOfTheParkingLot(parking_lot, wait_queue, number);
             if (res == OK) {           // 驶离成功
-                cout << "\n[成功] 车辆 " << number << " 已驶离停车场" << endl;
             }
             else {                     // 未找到车辆
                 cout << "\n[错误] 未找到车牌号为 " << number << " 的车辆！" << endl;
+                cout << "       请确认车牌号是否正确，或车辆是否已在停车场/等待区。" << endl;
             }
 
             cout << "\n按回车键返回主菜单...";
